@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
@@ -98,7 +99,7 @@ public class Main {
 
 				switch (selec) {
 				case 1:
-					System.out.print("Ingresar actividad: ");
+					System.out.print("Ingresar actividad: \n");
 					String actividad = scan.nextLine();
 					try {
 						System.out.print("Ingresar horas: ");
@@ -267,9 +268,9 @@ public class Main {
 	
 	private static void menuAnalisis() {
 		boolean option = false;
+		Scanner scanner = new Scanner(System.in);
 		do {
 			try {
-				Scanner scanner = new Scanner(System.in);
 				
 				System.out.println("Bienvenido al menu de analisis!\r\n"
 						+ "\r\n"
@@ -284,7 +285,7 @@ public class Main {
 				
 				switch (eleccionAnalisis) {
 					case 1:
-					
+						actividadMasRealizadaAnalisis();
 						break;
 					case 2:
 						break;
@@ -306,7 +307,7 @@ public class Main {
 			}
 			
 		} while(!option);
-		
+		scanner.close();
 	}
 
 	private static void modificarArchivo(String archivo, String original, String modificación, int Tipo) {
@@ -357,6 +358,47 @@ public class Main {
 		} catch (Exception e) {
 			System.out.println("Archivo no encontrado");
 		}
+	}
+	
+	private static void actividadMasRealizadaAnalisis() {
+		try {
+			Scanner scanner = new Scanner(new File("Registros.txt"));
+			//teniendo en cuenta que maximo de actividades son 300.... vectores de 300 supongo
+			String[] actividadeStrings = new String[300];
+			int[] totalHoras = new int[300];
+			int contadorActividades = 0;
+			
+			//el lector para registros....
+			while (scanner.hasNextLine()) {
+				String line = scanner.nextLine();
+				String[] parteStrings = line.split(";");
+				
+				String actiString = parteStrings[3];
+				int horas = Integer.parseInt(parteStrings[2]);
+				
+				//if elemento in lista
+				boolean ifElemento = false;
+				
+				for(int i = 0; i<contadorActividades; i++) {
+					if(actividadeStrings[i].equalsIgnoreCase(actiString)) {
+						totalHoras[i] += horas;
+						ifElemento = true;
+						break;
+					}
+				}
+				if(!ifElemento) {
+					actividadeStrings[contadorActividades] = actiString;
+					totalHoras[contadorActividades] = horas;
+					contadorActividades++;
+				}
+			} scanner.close();
+			
+			
+			
+		} catch (IOException e) {
+			System.out.println("ERROR de lectura " + e);
+		}
+		
 	}
 
 }

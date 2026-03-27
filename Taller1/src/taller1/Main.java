@@ -55,6 +55,7 @@ public class Main {
 					break;
 
 				case 2:
+					menuAnalisis();
 
 					break;
 				case 3:
@@ -262,6 +263,50 @@ public class Main {
 		} while (true);
 
 		return true;
+	}
+	
+	private static void menuAnalisis() {
+		boolean option = false;
+		do {
+			try {
+				Scanner scanner = new Scanner(System.in);
+				
+				System.out.println("Bienvenido al menu de analisis!\r\n"
+						+ "\r\n"
+						+ "Que deseas realizar?\n");
+				
+				System.out.println("1) Actividad más realizada\r\n"
+						+ "2) Actividad más realizada por cada usuario\r\n"
+						+ "3) Usuario con mayor procastinacion\r\n"
+						+ "4) Ver todas las actividades\r\n"
+						+ "5) Salir");
+				int eleccionAnalisis = Integer.parseInt(scanner.nextLine());
+				
+				switch (eleccionAnalisis) {
+					case 1:
+					
+						break;
+					case 2:
+						break;
+					case 3:
+						break;
+					case 4:
+						break;
+					case 5:
+						option = true;
+						break;
+
+					default:
+					System.out.println("Seleccione una de las opciones existentes.\n");
+						break;
+				}
+				
+			}catch (NumberFormatException e) {
+				System.out.println("por favor utilizar un valor valido\n");
+			}
+			
+		} while(!option);
+		
 	}
 
 	private static void modificarArchivo(String archivo, String original, String modificación, int Tipo) {

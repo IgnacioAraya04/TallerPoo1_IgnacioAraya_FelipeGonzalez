@@ -23,6 +23,12 @@ public class Main {
 			try {
 				System.out.println("1) Menú de Usuarios \n" + "2) Menú de Análisis \n" + "3) Salir \n");
 				System.out.print("Elección: ");
+				
+				
+				/*algo tira error aqui nacho, miralo pls:
+				 * Exception in thread "main" java.util.NoSuchElementException: No line found
+					at java.base/java.util.Scanner.nextLine(Scanner.java:1660)
+				 */
 				Integer Elección = Integer.valueOf(scan.nextLine());
 				switch (Elección) {
 				case 1:
@@ -393,7 +399,28 @@ public class Main {
 				}
 			} scanner.close();
 			
+			if(contadorActividades > 0) {
+				
+				int maxHoras = totalHoras[0];
+				String actividadHoraMaxima = actividadeStrings[0];
 			
+				 for (int i = 1; i < contadorActividades; i++) {
+					 
+					 if (totalHoras[i] > maxHoras) {
+						 
+		                    maxHoras = totalHoras[i];
+		                    actividadHoraMaxima = actividadeStrings[i];
+		                }
+				 }
+				 
+				 System.out.println("\n --- Actividad mas realizada ---");
+				 System.out.println("Actividad: " + actividadHoraMaxima);
+				 System.out.println("Total horas: " + maxHoras + " horas\n");
+				 
+			} else {
+				//no creo que se trigueree esta cosa pero mejo prevenir
+				System.out.println("no hay actividades registradas \n");
+			}
 			
 		} catch (IOException e) {
 			System.out.println("ERROR de lectura " + e);

@@ -62,7 +62,7 @@ public class Main {
 					break;
 
 				case 2:
-					menuAnalisis();
+					menuAnalisis(scan);
 
 					break;
 				case 3:
@@ -272,9 +272,8 @@ public class Main {
 		return true;
 	}
 	
-	private static void menuAnalisis() {
+	private static void menuAnalisis(Scanner scanner) {
 		boolean option = false;
-		Scanner scanner = new Scanner(System.in);
 		do {
 			try {
 				
@@ -311,9 +310,7 @@ public class Main {
 			}catch (NumberFormatException e) {
 				System.out.println("por favor utilizar un valor valido\n");
 			}
-			
 		} while(!option);
-		scanner.close();
 	}
 
 	private static void modificarArchivo(String archivo, String original, String modificación, int Tipo) {

@@ -9,6 +9,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
+import sun.tools.jar.resources.jar;
+
 public class Main {
 
 	public static void main(String[] args) throws FileNotFoundException {
@@ -23,11 +25,11 @@ public class Main {
 			try {
 				System.out.println("1) Menú de Usuarios \n" + "2) Menú de Análisis \n" + "3) Salir \n");
 				System.out.print("Elección: ");
-				
-				
-				/*algo tira error aqui nacho, miralo pls:
-				 * Exception in thread "main" java.util.NoSuchElementException: No line found
-					at java.base/java.util.Scanner.nextLine(Scanner.java:1660)
+
+				/*
+				 * algo tira error aqui nacho, miralo pls: Exception in thread "main"
+				 * java.util.NoSuchElementException: No line found at
+				 * java.base/java.util.Scanner.nextLine(Scanner.java:1660)
 				 */
 				Integer Elección = Integer.valueOf(scan.nextLine());
 				switch (Elección) {
@@ -271,46 +273,42 @@ public class Main {
 
 		return true;
 	}
-	
+
 	private static void menuAnalisis(Scanner scanner) {
 		boolean option = false;
 		do {
 			try {
-				
-				System.out.println("Bienvenido al menu de analisis!\r\n"
-						+ "\r\n"
-						+ "Que deseas realizar?\n");
-				
-				System.out.println("1) Actividad más realizada\r\n"
-						+ "2) Actividad más realizada por cada usuario\r\n"
-						+ "3) Usuario con mayor procastinacion\r\n"
-						+ "4) Ver todas las actividades\r\n"
-						+ "5) Salir");
-				int eleccionAnalisis = Integer.parseInt(scanner.nextLine());
-				
-				switch (eleccionAnalisis) {
-					case 1:
-						actividadMasRealizadaAnalisis();
-						break;
-					case 2:
-						break;
-					case 3:
-						break;
-					case 4:
-						break;
-					case 5:
-						option = true;
-						break;
 
-					default:
+				System.out.println("Bienvenido al menu de analisis!\r\n" + "\r\n" + "Que deseas realizar?\n");
+
+				System.out.println("1) Actividad más realizada\r\n" + "2) Actividad más realizada por cada usuario\r\n"
+						+ "3) Usuario con mayor procastinacion\r\n" + "4) Ver todas las actividades\r\n" + "5) Salir");
+				int eleccionAnalisis = Integer.parseInt(scanner.nextLine());
+
+				switch (eleccionAnalisis) {
+				case 1:
+					actividadMasRealizadaAnalisis();
+					break;
+				case 2:
+					actividadMasRealizadaAnalisis();
+					break;
+				case 3:
+					break;
+				case 4:
+					break;
+				case 5:
+					option = true;
+					break;
+
+				default:
 					System.out.println("Seleccione una de las opciones existentes.\n");
-						break;
+					break;
 				}
-				
-			}catch (NumberFormatException e) {
+
+			} catch (NumberFormatException e) {
 				System.out.println("por favor utilizar un valor valido\n");
 			}
-		} while(!option);
+		} while (!option);
 	}
 
 	private static void modificarArchivo(String archivo, String original, String modificación, int Tipo) {
@@ -362,67 +360,146 @@ public class Main {
 			System.out.println("Archivo no encontrado");
 		}
 	}
-	
+
+	/*
+	 * actividad mas reciente opcion 1 y 2 de Menu Analisis
+	 */
 	private static void actividadMasRealizadaAnalisis() {
 		try {
 			Scanner scanner = new Scanner(new File("Registros.txt"));
-			//teniendo en cuenta que maximo de actividades son 300.... vectores de 300 supongo
+			// teniendo en cuenta que maximo de actividades son 300.... vectores de 300
+			// supongo
 			String[] actividadeStrings = new String[300];
 			int[] totalHoras = new int[300];
 			int contadorActividades = 0;
-			
-			//el lector para registros....
+
+			// el lector para registros....
 			while (scanner.hasNextLine()) {
 				String line = scanner.nextLine();
 				String[] parteStrings = line.split(";");
-				
+
 				String actiString = parteStrings[3];
 				int horas = Integer.parseInt(parteStrings[2]);
-				
-				//if elemento in lista
+
+				// if elemento in lista
 				boolean ifElemento = false;
-				
-				for(int i = 0; i<contadorActividades; i++) {
-					if(actividadeStrings[i].equalsIgnoreCase(actiString)) {
+
+				for (int i = 0; i < contadorActividades; i++) {
+					if (actividadeStrings[i].equalsIgnoreCase(actiString)) {
 						totalHoras[i] += horas;
 						ifElemento = true;
 						break;
 					}
 				}
-				if(!ifElemento) {
+				if (!ifElemento) {
 					actividadeStrings[contadorActividades] = actiString;
 					totalHoras[contadorActividades] = horas;
 					contadorActividades++;
 				}
-			} scanner.close();
-			
-			if(contadorActividades > 0) {
-				
+			}
+			scanner.close();
+			// scanner cerrado
+
+			/*
+			 * ahora si para ver actividades con mayor horas y presencia
+			 */
+			if (contadorActividades > 0) {
+
 				int maxHoras = totalHoras[0];
 				String actividadHoraMaxima = actividadeStrings[0];
-			
-				 for (int i = 1; i < contadorActividades; i++) {
-					 
-					 if (totalHoras[i] > maxHoras) {
-						 
-		                    maxHoras = totalHoras[i];
-		                    actividadHoraMaxima = actividadeStrings[i];
-		                }
-				 }
-				 
-				 System.out.println("\n --- Actividad mas realizada ---");
-				 System.out.println("Actividad: " + actividadHoraMaxima);
-				 System.out.println("Total horas: " + maxHoras + " horas\n");
-				 
+
+				for (int i = 1; i < contadorActividades; i++) {
+
+					if (totalHoras[i] > maxHoras) {
+
+						maxHoras = totalHoras[i];
+						actividadHoraMaxima = actividadeStrings[i];
+					}
+				}
+
+				System.out.println("\n --- Actividad mas realizada ---");
+				System.out.println("Actividad: " + actividadHoraMaxima);
+				System.out.println("Total horas: " + maxHoras + " horas\n");
+
 			} else {
-				//no creo que se trigueree esta cosa pero mejo prevenir
+				// no creo que se trigueree esta cosa pero mejo prevenir
 				System.out.println("no hay actividades registradas \n");
 			}
-			
+
 		} catch (IOException e) {
 			System.out.println("ERROR de lectura " + e);
 		}
-		
+
 	}
 
+	private static void actividadMasRealizadaPorUsuario() {
+		try {
+			Scanner archivoScanner = new Scanner(new File("Registros.txt"));
+
+			// se supone que el limite eran 300
+			String[] usuariosTemporal = new String[300];
+			String[] actividadesTemporal = new String[300];
+			int[] horasTemporales = new int[300];
+
+			// esto es para sumar con suerte los registros
+			int contadorRegistros = 0;
+
+			while (archivoScanner.hasNextLine()) {
+
+				String linea = archivoScanner.nextLine();
+				String[] partes = linea.split(";");
+
+				if (partes.length == 4) {
+					String usuarioString = partes[0];
+					String actividadString = partes[3];
+					int horas = Integer.parseInt(partes[2]);
+
+					// esto es para ver si hay usuarios con actividad
+					boolean encontrada = false;
+
+					for (int i = 0; i < contadorRegistros; i++) {
+						if (usuariosTemporal[i].equalsIgnoreCase(usuarioString) && actividadesTemporal[i].equalsIgnoreCase(actividadString)) {
+							horasTemporales[i] += horas;
+							encontrada = true;
+							break;
+						}
+					}
+
+					if (!encontrada) {
+						usuariosTemporal[contadorRegistros] = usuarioString;
+						actividadesTemporal[contadorRegistros] = actividadString;
+						horasTemporales[contadorRegistros] = horas;
+						contadorRegistros++;
+					}
+				}
+			}
+			archivoScanner.close();
+
+			String[] usuariosUnicosStrings = new String[300];
+			String[] actividadesUnicosMax = new String[300];
+			int[] horasMax = new int[300];
+			int contadorUsuarios = 0;
+			//esto se supone que es para ver si ya encontre al usuario
+			for (int i = 0; i < contadorRegistros; i++) {
+
+				String usuarioActual = usuariosTemporal[i];
+				boolean usuarioExistente = false;
+				
+				for (int j = 0; j < contadorUsuarios; j++) {
+					if (usuariosUnicosStrings[j].equalsIgnoreCase(usuarioActual)) {
+	                    if (horasTemporales[i] > horasMax[j]) {
+	                        horasMax[j] = horasTemporales[i];
+	                        actividadesUnicosMax[j] = actividadesTemporal[i];
+	                    }
+	                    usuarioExistente = true;
+	                    break;	
+					}
+				}
+				
+			}
+		} catch (FileNotFoundException e) {
+			System.out.println("Error: No se encontró el archivo Registros.txt\n");
+
+		}
+	}
 }

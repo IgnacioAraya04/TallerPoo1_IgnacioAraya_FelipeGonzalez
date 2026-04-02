@@ -1,5 +1,9 @@
 package taller1;
 
+/* Ignacio Araya Munizaga 21.824.045-3 Ingenieria en tecnologias de la información
+ * 
+ */
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -8,8 +12,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
+import java.util.regex.PatternSyntaxException;
 
-import sun.tools.jar.resources.jar;
+
 
 public class Main {
 
@@ -26,11 +31,6 @@ public class Main {
 				System.out.println("1) Menú de Usuarios \n" + "2) Menú de Análisis \n" + "3) Salir \n");
 				System.out.print("Elección: ");
 
-				/*
-				 * algo tira error aqui nacho, miralo pls: Exception in thread "main"
-				 * java.util.NoSuchElementException: No line found at
-				 * java.base/java.util.Scanner.nextLine(Scanner.java:1660)
-				 */
 				Integer Elección = Integer.valueOf(scan.nextLine());
 				switch (Elección) {
 				case 1:
@@ -55,7 +55,7 @@ public class Main {
 						System.out.print(
 								"Desea continuar con otro usuario? S/N (de ingresar un valor no válido se le devolvera automaticamente): ");
 						String continuar = scan.nextLine();
-						if (continuar.equalsIgnoreCase("s") == false) {
+						if (!continuar.equalsIgnoreCase("s")) {
 							break;
 						}
 
@@ -78,8 +78,8 @@ public class Main {
 			} catch (NumberFormatException e) {
 				System.out.println("Por favor utilizar un valor válido\n");
 			}
-		} while (salir == false);
-		// scan.close();
+		} while (!salir);
+		scan.close();
 	}
 
 	private static String[][] cargarUsuarios(String[][] usuarios, Scanner scan) throws FileNotFoundException {
@@ -99,7 +99,7 @@ public class Main {
 	private static boolean menuUsuarios(Scanner scan, String[][] usuarios, String usuario) {
 		do {
 			try {
-				System.out.println("Bienvenido " + usuario + "\n" + "Que desea realizar\n" + "1) Registrar actividad\n"
+				System.out.println("Bienvenido " + usuario + "\n" + "Que desea realizar?\n" + "1) Registrar actividad\n"
 						+ "2) Modificar Actividad\n" + "3) Eliminar actividad\n" + "4) Cambiar contraseña\n"
 						+ "5) Salir\n");
 				System.out.print("Elección: ");
@@ -133,7 +133,7 @@ public class Main {
 					break;
 				case 2:
 					System.out.println("cual actividad deseas modificar?");
-					String[] tempList = new String[100];
+					String[] tempList = new String[300];
 					do {
 						try {
 							Scanner scanArch = new Scanner(new File("Registros.txt"));
@@ -198,8 +198,10 @@ public class Main {
 									}
 									modificarArchivo("Registros.txt", lineaModificar, lineaModificada, 1);
 
-								} catch (Exception e) {
+								} catch (NumberFormatException e) {
 									System.out.println("Ingrese un valor valido;");
+								} catch (IndexOutOfBoundsException e) {
+									System.out.println("El archivo supera el límite de 300 registros");
 								}
 							}
 
@@ -210,8 +212,8 @@ public class Main {
 
 					break;
 				case 3:
-					System.out.println("cual actividad deseas modificar?");
-					String[] tempListborrar = new String[100];
+					System.out.println("cual actividad deseas eliminar?");
+					String[] tempListborrar = new String[300];
 					do {
 						try {
 							Scanner scanArch = new Scanner(new File("Registros.txt"));
@@ -232,10 +234,12 @@ public class Main {
 								System.out.println("");
 							}
 							String lineaModificar = tempListborrar[indexLinea - 1];
-							modificarArchivo("Registros.txt", lineaModificar, "", 3);
-							System.out.println("actividad eliminada con exito");
-						} catch (Exception e) {
-							System.out.println("ingresar un valor válido");
+							modificarArchivo("Registros.txt", lineaModificar, "", 2);
+							System.out.println("actividad eliminada con exito.");
+						} catch (NumberFormatException e) {
+							System.out.println("Ingresar un valor válido.");
+						} catch (IndexOutOfBoundsException e) {
+							System.out.println("El archivo supera el límite de 300 registros.");
 						}
 					} while (false);
 					break;
@@ -312,6 +316,17 @@ public class Main {
 	}
 
 	private static void modificarArchivo(String archivo, String original, String modificación, int Tipo) {
+		Integer contadorLineas = 0;
+		try {
+			Scanner scanCont = new Scanner(new File(archivo));
+			while (scanCont.hasNextLine()) {
+				contadorLineas++;
+				scanCont.nextLine();
+			}
+			scanCont.close();
+
+		} catch (Exception e) {
+		}
 		try {
 			if (Tipo == 0) {
 				BufferedWriter escritor = new BufferedWriter(new FileWriter(archivo, true));
@@ -321,30 +336,38 @@ public class Main {
 			} else if (Tipo == 1) {
 
 				BufferedReader lector = new BufferedReader(new FileReader(archivo));
-
 				String palabras = "";
 				String lista = "";
-
+				Integer contador = 0;
 				while ((palabras = lector.readLine()) != null) {
-					lista += palabras + "\r\n";
+					if (contador == contadorLineas -1) {
+						lista += palabras;	
+					}else {
+						lista += palabras + "\r\n";	
+						contador++;
+					}
 				}
 				lector.close();
 
 				String textoNuevo = lista.replaceAll(original, modificación);
-
 				FileWriter escritor = new FileWriter(archivo);
 				escritor.write(textoNuevo);
 				escritor.close();
-
-			} else if (Tipo == 3) {
+			} else if (Tipo == 2) {
 				BufferedReader lector = new BufferedReader(new FileReader(archivo));
 
 				String palabras = "";
 				String lista = "";
+				Integer contador = 0;
 
 				while ((palabras = lector.readLine()) != null) {
-					if (!palabras.equalsIgnoreCase(original)) {
-						lista += palabras + "\r\n";
+					if (contador == contadorLineas-1) {
+						lista+= palabras;
+					}else {
+						if (!palabras.equalsIgnoreCase(original)) {
+							lista += palabras + "\r\n";
+						}
+						contador++;
 					}
 				}
 				lector.close();
@@ -356,8 +379,10 @@ public class Main {
 				escritor.close();
 			}
 
-		} catch (Exception e) {
+		} catch (IOException e) {
 			System.out.println("Archivo no encontrado");
+		}catch (PatternSyntaxException e) {
+			System.out.println("aca cae");
 		}
 	}
 
@@ -422,7 +447,7 @@ public class Main {
 				System.out.println("Total horas: " + maxHoras + " horas\n");
 
 			} else {
-				// no creo que se trigueree esta cosa pero mejo prevenir
+				// no creo que se trigueree esta cosa pero mejor prevenir
 				System.out.println("no hay actividades registradas \n");
 			}
 

@@ -12,7 +12,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
-import java.util.regex.PatternSyntaxException;
+
 
 
 
@@ -294,7 +294,7 @@ public class Main {
 					actividadMasRealizadaAnalisis();
 					break;
 				case 2:
-					actividadMasRealizadaAnalisis();
+					actividadMasRealizadaPorUsuario();
 					break;
 				case 3:
 					break;
@@ -381,8 +381,6 @@ public class Main {
 
 		} catch (IOException e) {
 			System.out.println("Archivo no encontrado");
-		}catch (PatternSyntaxException e) {
-			System.out.println("aca cae");
 		}
 	}
 
@@ -451,7 +449,7 @@ public class Main {
 				System.out.println("no hay actividades registradas \n");
 			}
 
-		} catch (IOException e) {
+		} catch (FileNotFoundException e) {
 			System.out.println("ERROR de lectura " + e);
 		}
 
@@ -501,7 +499,7 @@ public class Main {
 			archivoScanner.close();
 
 			String[] usuariosUnicosStrings = new String[300];
-			String[] actividadesUnicosMax = new String[300];
+			String[] actividadesMax = new String[300];
 			int[] horasMax = new int[300];
 			int contadorUsuarios = 0;
 			//esto se supone que es para ver si ya encontre al usuario
@@ -514,13 +512,31 @@ public class Main {
 					if (usuariosUnicosStrings[j].equalsIgnoreCase(usuarioActual)) {
 	                    if (horasTemporales[i] > horasMax[j]) {
 	                        horasMax[j] = horasTemporales[i];
-	                        actividadesUnicosMax[j] = actividadesTemporal[i];
+	                        actividadesMax[j] = actividadesTemporal[i];
 	                    }
+	                    
 	                    usuarioExistente = true;
 	                    break;	
 					}
 				}
 				
+				if (!usuarioExistente) {
+					usuariosUnicosStrings[contadorUsuarios] = usuarioActual;
+					actividadesMax[contadorUsuarios] = actividadesTemporal[i];
+					horasMax[contadorUsuarios] = horasTemporales[i];
+					contadorUsuarios++;
+				}
+			}
+			System.out.println("\n Actividades mas realizadas por cada usuario: \n");
+			
+			if (contadorUsuarios > 0) {
+				
+				for (int i = 0; i < contadorUsuarios; i++) {
+					
+					System.out.println("* " + usuariosUnicosStrings[i] + " -> " + actividadesMax[i] + " con " + horasMax[i] + " horas registradas\n");
+				}	
+			} else {
+				System.out.println("No hay actividades registradas.\n");
 			}
 		} catch (FileNotFoundException e) {
 			System.out.println("Error: No se encontró el archivo Registros.txt\n");

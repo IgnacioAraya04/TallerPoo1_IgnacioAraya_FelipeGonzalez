@@ -1,7 +1,7 @@
 package taller1;
 
 /* Ignacio Araya Munizaga 21.824.045-3 Ingenieria en tecnologias de la información
- * 
+ * Felipe Gonzalez Zuleta 21.776.516-1 Ingenieria en tecnologias de la información
  */
 
 import java.io.BufferedReader;
@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
@@ -377,7 +376,7 @@ public class Main {
 				escritor.close();
 			}
 
-		} catch (IOException e) {
+		} catch (Exception e) {
 			System.out.println("Archivo no encontrado");
 		}
 	}

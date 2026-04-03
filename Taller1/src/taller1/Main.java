@@ -402,6 +402,7 @@ public class Main {
 			int registrosTotales = 0;
 
 			// el lector para registros....
+			try {
 			while (scanner.hasNextLine()) {
 				String line = scanner.nextLine();
 				String[] parteStrings = line.split(";");
@@ -430,6 +431,9 @@ public class Main {
 					totalHoras[contadorActividades] = horas;
 					contadorActividades++;
 				}
+			}
+			} catch (IndexOutOfBoundsException e) {
+				System.out.println("El número de registros supera el límite de 300\n"+"Mostrando resultados hasta el límite de 300");
 			}
 			scanner.close();
 			// scanner cerrado

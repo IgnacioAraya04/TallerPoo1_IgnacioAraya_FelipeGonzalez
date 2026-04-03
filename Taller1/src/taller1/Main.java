@@ -287,7 +287,7 @@ public class Main {
 
 				switch (eleccionAnalisis) {
 				case 1:
-					actividadMasRealizadaAnalisis();
+					actividadMasRealizadaAnalisis(false);
 					break;
 				case 2:
 					actividadMasRealizadaPorUsuario();
@@ -296,6 +296,7 @@ public class Main {
 					usuarioMayorProcrastinacion();
 					break;
 				case 4:
+					actividadMasRealizadaAnalisis(true);
 					break;
 				case 5:
 					option = true;
@@ -384,7 +385,7 @@ public class Main {
 	/*
 	 * actividad mas reciente opcion 1 y 2 de Menu Analisis
 	 */
-	private static void actividadMasRealizadaAnalisis() {
+	private static void actividadMasRealizadaAnalisis(boolean mostrarRegistrosCompletos) {
 		try {
 			Scanner scanner = new Scanner(new File("Registros.txt"));
 			// teniendo en cuenta que maximo de actividades son 300.... vectores de 300
@@ -393,6 +394,13 @@ public class Main {
 			int[] totalHoras = new int[300];
 			int contadorActividades = 0;
 
+			// esto es para el case 4
+			String[] registroUsuario = new String[300];
+			String[] registroFecha = new String[300];
+			int[] registroHoras = new int[300];
+			String[] registroActividad = new String[300];
+			int registrosTotales = 0;
+
 			// el lector para registros....
 			while (scanner.hasNextLine()) {
 				String line = scanner.nextLine();
@@ -400,6 +408,12 @@ public class Main {
 
 				String actiString = parteStrings[3];
 				int horas = Integer.parseInt(parteStrings[2]);
+				// este es para case 4
+				registroUsuario[registrosTotales] = parteStrings[0];
+				registroFecha[registrosTotales] = parteStrings[1];
+				registroHoras[registrosTotales] = Integer.parseInt(parteStrings[2]);
+				registroActividad[registrosTotales] = parteStrings[3];
+				registrosTotales++;
 
 				// if elemento in lista
 				boolean ifElemento = false;
@@ -423,27 +437,36 @@ public class Main {
 			/*
 			 * ahora si para ver actividades con mayor horas y presencia
 			 */
-			if (contadorActividades > 0) {
-
-				int maxHoras = totalHoras[0];
-				String actividadHoraMaxima = actividadeStrings[0];
-
-				for (int i = 1; i < contadorActividades; i++) {
-
-					if (totalHoras[i] > maxHoras) {
-
-						maxHoras = totalHoras[i];
-						actividadHoraMaxima = actividadeStrings[i];
+			// este es para el case 4
+			if (mostrarRegistrosCompletos) {
+				System.out.println("\n --- Todas las actividades (registros completos) --- \n");
+				if (registrosTotales > 0) {
+					for (int i = 0; i < registrosTotales; i++) {
+						System.out.println((i + 1) + " " + registroUsuario[i] + ";" + registroFecha[i] + ";"
+								+ registroHoras[i] + ";" + registroActividad[i]);
 					}
+					System.out.println("\nTotal de registros: " + registrosTotales + "\n");
+				} else {
+					System.out.println("No hay actividades registradas\n");
 				}
 
-				System.out.println("\n --- Actividad mas realizada ---");
-				System.out.println("Actividad: " + actividadHoraMaxima);
-				System.out.println("Total horas: " + maxHoras + " horas\n");
-
+				// este de aqui es para el case 1 del menu de analisis
 			} else {
-				// no creo que se trigueree esta cosa pero mejor prevenir
-				System.out.println("no hay actividades registradas \n");
+				if (contadorActividades > 0) {
+					int maxHoras = totalHoras[0];
+					String actividadHoraMaxima = actividadeStrings[0];
+					for (int i = 1; i < contadorActividades; i++) {
+						if (totalHoras[i] > maxHoras) {
+							maxHoras = totalHoras[i];
+							actividadHoraMaxima = actividadeStrings[i];
+						}
+					}
+					System.out.println("\n --- Actividad mas realizada ---");
+					System.out.println("Actividad: " + actividadHoraMaxima);
+					System.out.println("Total horas: " + maxHoras + " horas\n");
+				} else {
+					System.out.println("No hay actividades registradas\n");
+				}
 			}
 
 		} catch (FileNotFoundException e) {
@@ -478,7 +501,8 @@ public class Main {
 					boolean encontrada = false;
 
 					for (int i = 0; i < contadorRegistros; i++) {
-						if (usuariosTemporal[i].equalsIgnoreCase(usuarioString) && actividadesTemporal[i].equalsIgnoreCase(actividadString)) {
+						if (usuariosTemporal[i].equalsIgnoreCase(usuarioString)
+								&& actividadesTemporal[i].equalsIgnoreCase(actividadString)) {
 							horasTemporales[i] += horas;
 							encontrada = true;
 							break;
@@ -541,11 +565,12 @@ public class Main {
 
 		}
 	}
-	//al menos no me ha tirado error pero hay que echarle vistazo
+
+	// al menos no me ha tirado error pero hay que echarle vistazo
 	private static void usuarioMayorProcrastinacion() {
 		try {
 			Scanner scanner = new Scanner(new File("Registros.txt"));
-			//los vectores
+			// los vectores
 			String[] usuariosTempStrings = new String[300];
 			int[] totalHorasTemporal = new int[300];
 			int contadorUsuarios = 0;
@@ -575,7 +600,7 @@ public class Main {
 				}
 			}
 			scanner.close();
-			
+
 			if (contadorUsuarios > 0) {
 				int maxHoras = totalHorasTemporal[0];
 				String usuarioMax = usuariosTempStrings[0];

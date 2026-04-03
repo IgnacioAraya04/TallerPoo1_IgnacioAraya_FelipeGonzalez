@@ -13,9 +13,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
-
-
-
 public class Main {
 
 	public static void main(String[] args) throws FileNotFoundException {
@@ -297,6 +294,7 @@ public class Main {
 					actividadMasRealizadaPorUsuario();
 					break;
 				case 3:
+					usuarioMayorProcrastinacion();
 					break;
 				case 4:
 					break;
@@ -340,10 +338,10 @@ public class Main {
 				String lista = "";
 				Integer contador = 0;
 				while ((palabras = lector.readLine()) != null) {
-					if (contador == contadorLineas -1) {
-						lista += palabras;	
-					}else {
-						lista += palabras + "\r\n";	
+					if (contador == contadorLineas - 1) {
+						lista += palabras;
+					} else {
+						lista += palabras + "\r\n";
 						contador++;
 					}
 				}
@@ -361,9 +359,9 @@ public class Main {
 				Integer contador = 0;
 
 				while ((palabras = lector.readLine()) != null) {
-					if (contador == contadorLineas-1) {
-						lista+= palabras;
-					}else {
+					if (contador == contadorLineas - 1) {
+						lista += palabras;
+					} else {
 						if (!palabras.equalsIgnoreCase(original)) {
 							lista += palabras + "\r\n";
 						}
@@ -502,24 +500,24 @@ public class Main {
 			String[] actividadesMax = new String[300];
 			int[] horasMax = new int[300];
 			int contadorUsuarios = 0;
-			//esto se supone que es para ver si ya encontre al usuario
+			// esto se supone que es para ver si ya encontre al usuario
 			for (int i = 0; i < contadorRegistros; i++) {
 
 				String usuarioActual = usuariosTemporal[i];
 				boolean usuarioExistente = false;
-				
+
 				for (int j = 0; j < contadorUsuarios; j++) {
 					if (usuariosUnicosStrings[j].equalsIgnoreCase(usuarioActual)) {
-	                    if (horasTemporales[i] > horasMax[j]) {
-	                        horasMax[j] = horasTemporales[i];
-	                        actividadesMax[j] = actividadesTemporal[i];
-	                    }
-	                    
-	                    usuarioExistente = true;
-	                    break;	
+						if (horasTemporales[i] > horasMax[j]) {
+							horasMax[j] = horasTemporales[i];
+							actividadesMax[j] = actividadesTemporal[i];
+						}
+
+						usuarioExistente = true;
+						break;
 					}
 				}
-				
+
 				if (!usuarioExistente) {
 					usuariosUnicosStrings[contadorUsuarios] = usuarioActual;
 					actividadesMax[contadorUsuarios] = actividadesTemporal[i];
@@ -528,13 +526,14 @@ public class Main {
 				}
 			}
 			System.out.println("\n Actividades mas realizadas por cada usuario: \n");
-			
+
 			if (contadorUsuarios > 0) {
-				
+
 				for (int i = 0; i < contadorUsuarios; i++) {
-					
-					System.out.println("* " + usuariosUnicosStrings[i] + " -> " + actividadesMax[i] + " con " + horasMax[i] + " horas registradas\n");
-				}	
+
+					System.out.println("* " + usuariosUnicosStrings[i] + " -> " + actividadesMax[i] + " con "
+							+ horasMax[i] + " horas registradas\n");
+				}
 			} else {
 				System.out.println("No hay actividades registradas.\n");
 			}
@@ -543,4 +542,62 @@ public class Main {
 
 		}
 	}
+	//al menos no me ha tirado error pero hay que echarle vistazo
+	private static void usuarioMayorProcrastinacion() {
+		try {
+			Scanner scanner = new Scanner(new File("Registros.txt"));
+			//los vectores
+			String[] usuariosTempStrings = new String[300];
+			int[] totalHorasTemporal = new int[300];
+			int contadorUsuarios = 0;
+
+			while (scanner.hasNextLine()) {
+				String lineaString = scanner.nextLine();
+				String[] partesStrings = lineaString.split(";");
+
+				if (partesStrings.length == 4) {
+					String usuario = partesStrings[0];
+					int horas = Integer.parseInt(partesStrings[2]);
+
+					boolean encontrado = false;
+					for (int i = 0; i < contadorUsuarios; i++) {
+						if (usuariosTempStrings[i].equalsIgnoreCase(usuario)) {
+							totalHorasTemporal[i] += horas;
+							encontrado = true;
+							break;
+						}
+					}
+
+					if (!encontrado) {
+						usuariosTempStrings[contadorUsuarios] = usuario;
+						totalHorasTemporal[contadorUsuarios] = horas;
+						contadorUsuarios++;
+					}
+				}
+			}
+			scanner.close();
+			
+			if (contadorUsuarios > 0) {
+				int maxHoras = totalHorasTemporal[0];
+				String usuarioMax = usuariosTempStrings[0];
+
+				for (int i = 1; i < contadorUsuarios; i++) {
+					if (totalHorasTemporal[i] > maxHoras) {
+						maxHoras = totalHorasTemporal[i];
+						usuarioMax = usuariosTempStrings[i];
+					}
+				}
+
+				System.out.println("\n Usuario con mayor procastinacion: \n");
+				System.out.println("Usuario: " + usuarioMax);
+				System.out.println("Total horas: " + maxHoras + " horas \n");
+			} else {
+				System.out.println("No hay registros de actividades. \n");
+			}
+
+		} catch (FileNotFoundException e) {
+			System.out.println("Error: " + e);
+		}
+	}
+
 }
